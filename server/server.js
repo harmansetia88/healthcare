@@ -6,6 +6,9 @@ const dotenv = require("dotenv");
 const path = require("path");
 const hbs = require("hbs");
 
+const multer = require("multer")
+const upload = multer({dest: 'uploads/'}) // upload folder
+
 dotenv.config();
 connectDb(); // Connect to the database
 const app = express();
@@ -26,7 +29,39 @@ app.get('/', (req, res) => {
 
 // Register Handlebars partials
 hbs.registerPartials(path.join(__dirname, 'views/partials'));
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.fieldname + '-' + uniqueSuffix)
+    }
+})
 
+const uploads = multer({ storage: storage })
+
+const Upload = require("./models/UploadModel")
+
+app.post("/profile", upload.single('avatar'), async (req, res, next) => {
+    try {
+        const profileData = {
+            avatar: {
+                fileName: req.file.filename, // Use req.file.filename for file name
+                filePath: req.file.path,     // Use req.file.path for file path
+            },
+        };
+
+        const newProfile = new Upload(profileData);
+        await newProfile.save();
+
+        console.log("Profile saved:", newProfile);
+        res.redirect("/home");
+    } catch (error) {
+        console.error("Error saving profile:", error);
+        res.status(500).send("Error saving profile.");
+    }
+});
 // Home route
 app.get("/home", (req, res) => {
     res.render("home", {
