@@ -9,7 +9,7 @@ const hbs = require("hbs");
 dotenv.config();
 connectDb(); // Connect to the database
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Set up Handlebars as the view engine
 app.set('view engine', 'hbs');
