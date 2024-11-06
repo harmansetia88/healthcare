@@ -89,3 +89,15 @@ app.use(errorHandler); // Use your error handler middleware
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+app.get("/getPhotos", async (req, res) => {
+    try {
+        // Assuming Upload is a model for your database
+        const uploads = await Upload.find(); // Fetch all uploaded photos from the database
+        res.render("users", { uploads }); // Pass the photos to the template
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error fetching photos");
+    }
+});
