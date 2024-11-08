@@ -1,0 +1,44 @@
+const jwt = require('jsonwebtoken');
+
+const generateToken=(userData)=>{
+    //In this function we are creating a new JWTToke to provide user, for login/Session management or for the authorization perpose
+    return jwt.sign(userData,process.env.PRIVATE_KEY)
+}
+
+const validateJwtToken = (req,res,next)=>{
+    //first we are checking that JWT token is available or not
+    const authorization=req.headers.authorization;
+    //Output: 1. Bearer String
+    //Output: 2. String
+    //Output: 3. ___
+    //Output: 4. TOKEN BANA NHI, LOCAL HO YA ENDPOINT TESTING SE BHEJA HO,WITHOUT TOKEN HEADER SEND KARA H
+
+    if(!authorization){
+        return res.status(401).json
+        ({err:'Token not available'})
+    }
+    // WE ARE STORING THE TOKEN VALUE FROM HEADERS ANF SPLITTING TO GET "BEARER.xyz.abc.kjh" to"xyz.abc.kjh"
+    const token= req.headers.authorization.
+    split(' ')[1]
+    //TOKEN PROVIDED IS WRONG THROW ERROR MESSAGE
+    if(!token){
+        return res.status(401).json
+        ({err:'unauthorized User'});
+    }
+
+    try {
+      // IN THIS ERROR HANDLER TRY& CATCH :THE TOKEN IS VALIDATED OR VERIFIED, THEN MOVED TO NEXT MIDDELWARE OR RESPOND BACK TO CLUB
+        const validateToken = jwt.verify
+        (token,process.env.PRIVATE_KEY);
+       req.user=validateToken;
+       next();
+    }
+     catch(err) {
+        console.error("error occured : ", err.message);
+        
+    }
+    module.exports={
+        generateToken, validateJwtToken
+    }
+
+}

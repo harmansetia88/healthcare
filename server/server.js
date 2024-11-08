@@ -41,7 +41,7 @@ const storage = multer.diskStorage({
 
 const uploads = multer({ storage: storage })
 
-const Upload = require("./models/UploadModel")
+const Upload = require("./model/UploadModel")
 
 app.post("/profile", upload.single('avatar'), async (req, res, next) => {
     try {
@@ -65,7 +65,7 @@ app.post("/profile", upload.single('avatar'), async (req, res, next) => {
 // Home route
 app.get("/home", (req, res) => {
     res.render("home", {
-        username: "Jai Chopra",
+        username: "Harman Setia",
         posts: "time pass"
     });
 });
@@ -99,5 +99,5 @@ app.get("/getPhotos", async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send("Error fetching photos");
-    }
+    }
 });
